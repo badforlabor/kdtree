@@ -151,7 +151,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="kdtree.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="smoke.cpp" />
   </ItemGroup>
   <ItemGroup>

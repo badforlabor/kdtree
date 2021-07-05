@@ -15,10 +15,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="kdtree.cpp">
+    <ClCompile Include="smoke.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="smoke.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
