@@ -36,6 +36,9 @@ void SmokeTest2()
 	using KdTree = kdtree::KdTree<2>;
 	KdTree tree;
 
+	// compile error.
+	//KdTree tree2 = tree;
+
 	srand(1);
 	for (int i = 0; i < 1000; i++)
 	{

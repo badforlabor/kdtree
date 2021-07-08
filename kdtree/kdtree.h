@@ -70,6 +70,12 @@ namespace kdtree
 	class KdTree
 	{
 	public:
+		KdTree() = default;
+	private:
+		// noncopyable
+		KdTree(const KdTree&) = delete;
+		KdTree& operator=(const KdTree&) = delete;
+	public:
 		using KdValue = std::array<double, N>;
 
 	private:
@@ -128,6 +134,10 @@ namespace kdtree
 		}
 
 	public:
+		~KdTree()
+		{
+			LoopDestroy(Root);
+		}
 		void Push(const KdValue& V)
 		{
 			auto Node = new KdNode();
@@ -194,6 +204,17 @@ namespace kdtree
 		double Get(int DataIdx, int Axis) const
 		{
 			return ValueList[DataIdx][Axis];
+		}
+		void LoopDestroy(KdNode*& Node)
+		{
+			if (Node == nullptr)
+			{
+				return;
+			}
+			LoopDestroy(Node->Leaves[0]);
+			LoopDestroy(Node->Leaves[1]);
+			delete Node;
+			Node = nullptr;
 		}
 		void PushImpl(KdNode*& ParentNode, KdNode* Node, int Depth)
 		{
