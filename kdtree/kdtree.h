@@ -19,8 +19,6 @@
 
 namespace kdtree
 {
-	const int KdDim = 2;	
-
 	namespace kdtree_inside
 	{
 		class KdNode
@@ -66,7 +64,7 @@ namespace kdtree
 		};
 	}
 
-	template<int N>
+	template<int KdDim>
 	class KdTree
 	{
 	public:
@@ -76,7 +74,7 @@ namespace kdtree
 		KdTree(const KdTree&) = delete;
 		KdTree& operator=(const KdTree&) = delete;
 	public:
-		using KdValue = std::array<double, N>;
+		using KdValue = std::array<double, KdDim>;
 
 	private:
 		using KdNode = kdtree_inside::KdNode;
@@ -114,23 +112,23 @@ namespace kdtree
 			return (Leaf + 1) % 2;
 		}
 
-		static double DistSqr(const KdValue& A, const KdValue& B)
+		static double DistSqrt(const KdValue& A, const KdValue& B)
 		{
 			double d = 0;
 			for (int i = 0; i < KdDim; i++)
 			{
 				d += Sqr(A[i] - B[i]);
 			}
-			return d;
+			return sqrt(d);
 		}
-		static double DistSqr(const KdValue& A)
+		static double DistSqrt(const KdValue& A)
 		{
 			double d = 0;
 			for (int i = 0; i < KdDim; i++)
 			{
 				d += Sqr(A[i]);
 			}
-			return d;
+			return sqrt(d);
 		}
 
 	public:
@@ -263,7 +261,7 @@ namespace kdtree
 		{
 			int Counter = 0;
 			FindInRaidusImpl(Counter, List, Node, Center, Radius);
-			Assert(Counter <= O());
+			//Assert(Counter <= O());
 		}
 		void FindInRaidusImpl(int& Counter, std::vector<int>& List, KdNode* Node, const KdValue& Center, double Radius) const
 		{
@@ -275,7 +273,7 @@ namespace kdtree
 
 			// 如果在距离范围内，命中
 			auto& V = Get(Node->DataIdx);
-			if (DistSqr(V, Center) < Sqr(Radius))
+			if (DistSqrt(V, Center) < Abs(Radius))
 			{
 				List.push_back(Node->DataIdx);
 			}
@@ -310,7 +308,7 @@ namespace kdtree
 			Counter++;
 
 			// 更新最短距离。
-			auto NewDist = DistSqr(Get(Node->DataIdx), Center);
+			auto NewDist = DistSqrt(Get(Node->DataIdx), Center);
 			if (NewDist < Q.first || Q.first < 0)
 			{
 				Q.first = NewDist;
@@ -328,7 +326,7 @@ namespace kdtree
 			GetNeareastImpl(Counter, Q, Node->Leaves[Leaf], Center);
 			
 			// 如果发现此节点在优先范围内，那么也要查询下另一个子树
-			if (Sqr(Get(Node->DataIdx, Axis) - Center[Axis]) < Q.first)
+			if (Abs(Get(Node->DataIdx, Axis) - Center[Axis]) < Q.first)
 			{
 				GetNeareastImpl(Counter, Q, Node->Leaves[AnotherLeaf(Leaf)], Center);
 			}
@@ -348,7 +346,7 @@ namespace kdtree
 			Counter++;
 
 			// 记录此数据
-			auto Dist = DistSqr(V, Get(Node->DataIdx));
+			auto Dist = DistSqrt(V, Get(Node->DataIdx));
 			Q.Push(Dist, Node->DataIdx);
 
 			// 如果在左，就查左子树；否则查右子树
@@ -362,7 +360,7 @@ namespace kdtree
 
 			// 如果距离当前节点，小于存储的最大值，那么继续查找
 			auto MaxDist = Q.Back().first;
-			if (Sqr(V[Axis] - Get(Node->DataIdx, Axis)) < MaxDist)
+			if (Abs(V[Axis] - Get(Node->DataIdx, Axis)) < MaxDist)
 			{
 				GetNnkImpl(Counter, Q, Node->Leaves[AnotherLeaf(Leaf)], V);
 			}
